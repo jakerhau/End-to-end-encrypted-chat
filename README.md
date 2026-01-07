@@ -1,68 +1,188 @@
-# Hướng dẫn khởi động ban đầu
+# 🔐 End-to-End Encrypted Chat
 
-## A. Các bước thiết lập môi trường
+Ứng dụng nhắn tin bảo mật với mã hóa đầu cuối (E2EE), được xây dựng với React và FastAPI.
 
-### 0. Dùng CMD hoặc dùng Terminal của VS code/PowerShell
-``` terminal
-Crtl + `
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
+![React](https://img.shields.io/badge/react-19-61DAFB.svg)
+
+## 📋 Tổng quan
+
+Đây là ứng dụng chat bảo mật cho phép người dùng giao tiếp với nhau thông qua các cuộc hội thoại được mã hóa đầu cuối (End-to-End Encryption). Tin nhắn chỉ có thể được đọc bởi người gửi và người nhận, ngay cả server cũng không thể giải mã nội dung.
+
+### ✨ Tính năng chính
+
+- **🔒 Mã hóa đầu cuối (E2EE)**: Tin nhắn được mã hóa bằng AES-GCM với khóa phiên trao đổi qua RSA
+- **👥 Chat trực tiếp**: Nhắn tin 1-1 với bạn bè
+- **👨‍👩‍👧‍👦 Chat nhóm**: Tạo và quản lý nhóm chat với nhiều thành viên
+- **🤝 Hệ thống kết bạn**: Gửi/nhận lời mời kết bạn
+- **🔗 Liên kết mời nhóm**: Chia sẻ link mời tham gia nhóm
+- **⚡ Realtime**: Cập nhật tin nhắn theo thời gian thực qua WebSocket
+- **🎨 Giao diện hiện đại**: UI đẹp mắt với dark mode support
+- **📱 Emoji**: Hỗ trợ gửi emoji trong tin nhắn
+
+## 🏗️ Kiến trúc
+
 ```
-### 1. Tạo môi trường ảo (venv) - chỉ cần thực hiện 1 lần
+DuAnCNTT/
+├── backend/          # FastAPI Server
+│   ├── app/
+│   │   ├── api/          # HTTP & WebSocket endpoints
+│   │   ├── core/         # Cấu hình & bảo mật
+│   │   ├── cryptography/ # Thuật toán mã hóa E2EE
+│   │   ├── db/           # Models & Repositories (MongoDB)
+│   │   ├── services/     # Business logic
+│   │   └── ws/           # WebSocket management
+│   └── tests/            # Unit & Integration tests
+│
+└── frontend/         # React Application
+    └── src/
+        ├── components/   # UI Components
+        ├── pages/        # Các trang chính
+        ├── services/     # API services
+        ├── stores/       # Zustand state management
+        ├── lib/          # Crypto & utilities
+        └── types/        # TypeScript types
+```
+
+## 🛠️ Công nghệ sử dụng
+
+### Backend
+| Công nghệ | Mô tả |
+|-----------|-------|
+| **FastAPI** | Framework Python hiệu năng cao |
+| **MongoDB** | Database NoSQL với Beanie ODM |
+| **WebSocket** | Giao tiếp realtime |
+| **JWT** | Authentication tokens |
+| **RSA + AES-GCM** | Mã hóa E2EE |
+
+### Frontend
+| Công nghệ | Mô tả |
+|-----------|-------|
+| **React 19** | UI Library |
+| **TypeScript** | Type safety |
+| **Vite** | Build tool nhanh |
+| **TailwindCSS** | Utility-first CSS |
+| **Zustand** | State management |
+| **Socket.io** | WebSocket client |
+| **Radix UI** | Accessible components |
+
+## 🚀 Cài đặt & Chạy
+
+### Yêu cầu
+- Python 3.10+
+- Node.js 18+
+- MongoDB
+
+### Backend
+
 ```bash
+cd backend
+
+# Tạo môi trường ảo
 python -m venv venv
-```
 
-### 2. Kích hoạt môi trường ảo (venv) - thực hiện mỗi lần mở lại dự án
-```bash
+# Windows
 .\venv\Scripts\activate
+# Linux/Mac
+source venv/bin/activate
+
+# Cài đặt dependencies
+pip install -r requirements.txt
+
+# Chạy server
+uvicorn app.main:app --reload
 ```
-> **Lưu ý:** Nếu gặp lỗi sau khi kích hoạt trên terminal VS Code:
->
+
+> **Lưu ý Windows**: Nếu gặp lỗi PowerShell script, chạy:
+> ```powershell
+> Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 > ```
-> File D:\DA_CNTT\E2EE\venv\Scripts\Activate.ps1 cannot be loaded because running scripts is disabled on this system.
-> + CategoryInfo          : SecurityError
-> + FullyQualifiedErrorId : UnauthorizedAccess
-> ```
-> Đây là lỗi do Windows PowerShell chặn chạy script (.ps1) vì lý do bảo mật.
->
-> **Cách khắc phục:**
-> - Tạm thời cho phép:  
->   ```powershell
->   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
->   ```
-> - Cho phép vĩnh viễn:  
->   ```powershell
->   Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
->   ```
-> - Hoặc kích hoạt venv bằng CMD:  
->   ```cmd
->   .\venv\Scripts\activate
->   ```
 
-> **Dấu hiệu thành công:** Terminal chuyển thành `(venv) PS D:\DA_CNTT\E2EE>`
+### Frontend
 
-### 3. Cài đặt thư viện cần thiết
-- Cài từng thư viện:
-    ```bash
-    pip install cryptography
-    ```
-- Hoặc cài nhanh tất cả từ file `requirements.txt`:
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-> **Lưu ý:** Khi cài thêm thư viện mới, hãy dùng:
-> ```bash
-> pip freeze > requirements.txt
-> ```
-> để cập nhật danh sách thư viện vào file `requirements.txt`.
-
-- Các thư viện đã cài nằm trong `venv\Lib\site-packages\`, không cần cài lại trừ khi xóa thư mục venv.
-
-### 4. Kích hoạt lại môi trường ảo mỗi lần mở dự án
-- Không cần cài lại thư viện nếu đã cài trước đó.
-
-### 5. Thoát khỏi môi trường ảo
 ```bash
-deactivate
+cd frontend
+
+# Cài đặt dependencies
+npm install
+
+# Chạy development server
+npm run dev
 ```
 
+### Biến môi trường
+
+Tạo file `.env` trong thư mục `backend/`:
+
+```env
+MONGODB_URL=mongodb://localhost:27017
+DATABASE_NAME=e2ee_chat
+JWT_SECRET_KEY=your-secret-key
+JWT_ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+```
+
+## 🔐 Cách hoạt động E2EE
+
+1. **Tạo cặp khóa**: Mỗi user tạo cặp RSA key (public/private) khi đăng ký
+2. **Trao đổi khóa**: Khi bắt đầu chat, session key được trao đổi qua RSA
+3. **Mã hóa tin nhắn**: Tin nhắn được mã hóa bằng AES-GCM với session key
+4. **Xác thực**: Chữ ký RSA-PSS đảm bảo tính toàn vẹn của tin nhắn
+
+```
+┌─────────┐                              ┌─────────┐
+│  User A │                              │  User B │
+└────┬────┘                              └────┬────┘
+     │  1. Exchange RSA public keys           │
+     │◄──────────────────────────────────────►│
+     │                                        │
+     │  2. Generate & encrypt session key     │
+     │───────────────────────────────────────►│
+     │                                        │
+     │  3. Encrypt message with AES-GCM       │
+     │───────────────────────────────────────►│
+     │                                        │
+     │  4. Decrypt with shared session key    │
+     │                                        │
+```
+
+## 🧪 Testing
+
+```bash
+# Backend tests
+cd backend
+pytest
+
+# Frontend tests
+cd frontend
+npm run test
+```
+
+## 📁 Scripts
+
+| Script | Mô tả |
+|--------|-------|
+| `npm run dev` | Chạy frontend dev server |
+| `npm run build` | Build production |
+| `npm run test` | Chạy unit tests |
+| `uvicorn app.main:app --reload` | Chạy backend dev server |
+| `pytest` | Chạy backend tests |
+
+## 👥 Đóng góp
+
+1. Fork repository
+2. Tạo feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Mở Pull Request
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+<p align="center">
+  Made with ❤️ for secure communication
+</p>
