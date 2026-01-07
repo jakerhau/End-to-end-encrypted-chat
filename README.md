@@ -147,6 +147,69 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
      │                                        │
 ```
 
+## API & WebSocket
+
+### REST API (prefix `/api`)
+Auth:
+- `POST /api/auth/signup`
+- `POST /api/auth/signin`
+- `POST /api/auth/refresh-token`
+- `POST /api/auth/logout`
+
+Users:
+- `GET /api/users/me`
+- `GET /api/users/search?username=...`
+
+Friends:
+- `POST /api/friends/requests`
+- `POST /api/friends/requests/{request_id}/accept`
+- `POST /api/friends/requests/{request_id}/decline`
+- `GET /api/friends`
+- `GET /api/friends/requests`
+
+Conversations:
+- `POST /api/conversations`
+- `GET /api/conversations`
+- `GET /api/conversations/{conversation_id}/messages`
+- `PATCH /api/conversations/{conversation_id}/seen`
+- `DELETE /api/conversations/{conversation_id}`
+- `POST /api/conversations/{conversation_id}/members`
+- `POST /api/conversations/{conversation_id}/invite-link`
+- `POST /api/conversations/join-group`
+- `DELETE /api/conversations/{conversation_id}/leave`
+
+Messages:
+- `POST /api/messages/direct`
+- `POST /api/messages/group`
+- `POST /api/chats/{conversation_id}/messages` (luu ciphertext/metadata)
+
+E2EE:
+- `POST /api/e2ee/keys/register`
+- `GET /api/e2ee/keys/me`
+- `GET /api/e2ee/keys/{user_id}`
+- `GET /api/e2ee/keys/conversation/{conversation_id}`
+- `POST /api/e2ee/session/exchange`
+- `GET /api/e2ee/pending-keys`
+- `POST /api/e2ee/pending-keys/ack`
+
+Chi tiet day du: `http://localhost:8000/docs`
+
+### WebSocket
+Ket noi: `ws://localhost:8000/ws?token=<ACCESS_TOKEN>`
+
+Su kien tu client:
+- `ping`
+- `join-conversation` (payload: `conversationId`)
+
+Su kien tu server:
+- `online-users`
+- `new-message`
+- `new-group`
+- `group-members-added`
+- `group-members-removed`
+- `session-key-exchange`
+- `pong`
+
 ## 🧪 Testing
 
 ```bash
