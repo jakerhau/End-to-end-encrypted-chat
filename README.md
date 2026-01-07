@@ -146,11 +146,11 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
      │  4. Decrypt with shared session key    │
      │                                        │
 ```
-Nguyen tac chinh:
-- Client tao khoa RSA, public key dang ky len server; private key luu cuc bo va duoc ma hoa bang PIN.
-- Moi cuoc hoi thoai su dung khoa AES session (group co key_version), noi dung tin nhan duoc ma hoa bang AES-GCM.
-- Server khong giai ma; chi luu ciphertext + metadata, phat tan qua WebSocket.
-- Khi user offline, session key duoc luu vao pending-keys va duoc client ACK sau khi xu ly.
+**Nguyên tắc chính:**
+- Client tạo khóa RSA, public key đăng ký lên server; private key lưu cục bộ và được mã hóa bằng PIN.
+- Mỗi cuộc hội thoại sử dụng khóa AES session (group có key_version), nội dung tin nhắn được mã hóa bằng AES-GCM.
+- Server không giải mã; chỉ lưu ciphertext + metadata, phát tán qua WebSocket.
+- Khi user offline, session key được lưu vào pending-keys và được client ACK sau khi xử lý.
 
 ## API & WebSocket
 
